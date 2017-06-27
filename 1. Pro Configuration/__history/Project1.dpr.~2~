@@ -1,0 +1,106 @@
+﻿program ViewOfGeoFigures; //Определить вид получаемой геометрической фигуры
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils,
+  math;
+
+var x1, y1, x2, y2, x3, y3, x4, y4, xm, ym, xn, yn: Real;
+                          { координаты точек A(x1, y1), B(x2, y2), C(x3, y3), }
+                          {                  D(x4, y4), M(xm, ym) и N(xn, yn) }
+    s, p: Real;           {            свободные параметры                    }
+    F_123, F_124, F_234, F_231, F_341, F_342, F_413: Real;
+    AB, BC, CD, DA, AC, BD: Real;
+    Line_ABC, Line_BCD, Line_CDA, Line_DAB: Boolean;
+begin
+  Write('INPUT A(x1,y1), B(x2,y2), C(x3,y3) and D(x4,y4): ');
+  ReadLn(x1, y1, x2, y2, x3, y3, x4, y4);
+  WriteLn(' 4 points: A(', x1, ', ', y1, '), B(', x2, ', ', y2, '), C(',
+                           x3, ', ', y3, ') and D(', x4, ', ', y4, ').');
+
+  F_123 := (y1 - y2) * (x3 - x1) + (x2 - x1) * (y3 - y1);
+  F_124 := (y1 - y2) * (x4 - x1) + (x2 - x1) * (y4 - y1);
+
+  F_234 := (y2 - y3) * (x4 - x2) + (x3 - x2) * (y4 - y2);
+  F_231 := (y2 - y3) * (x1 - x2) + (x3 - x2) * (y1 - y2);
+
+  F_341 := (y3 - y4) * (x1 - x3) + (x4 - x3) * (y1 - y3);
+  F_342 := (y3 - y4) * (x2 - x3) + (x4 - x3) * (y2 - y3);
+
+  F_413 := (y4 - y1) * (x3 - x4) + (x1 - x4) * (y3 - y4);
+
+  (* CODE определит 6 видов: квадрат, прямоугольник,
+                  параллелограмм, ромб, трапеция или четырехугольник *)
+
+  if (F_123 * F_124 > 0) and (F_234 * F_231 > 0) and (F_341 * F_342 > 0) then
+                     // условия определят, что ABCD - четырехугольник или нет
+    begin
+       xm := (x1 + x3) / 2; ym := (y1 + y3) / 2;
+       xn := (x2 + x4) / 2; yn := (y2 + y4) / 2;
+       if (xm-xn = 0) and (ym-yn = 0) then
+         begin
+           s := sqr(x3-x1) + sqr(y3-y1) - sqr(x2-x4) - sqr(y2-y4);
+           p := (x3-x1) * (x2-x4) + (y3-y1) * (y2-y4);
+           if (s = 0) and (p = 0) then
+             WriteLn('Answer: ABCD - Square.')
+                                              // Ответ: ABCD - квадрат
+           else
+             if (s = 0) then
+               WriteLn('Answer: ABCD - Rectangle.')
+                                              // Ответ: ABCD - прямоугольник
+             else
+               if (p = 0) then
+                 WriteLn('Answer: ABCD - Rhomb.')
+                                              // Ответ: ABCD - ромб
+               else
+                 WriteLn('Answer: ABCD - Parallelogram.');
+                                              // Ответ: ABCD - параллелограмм
+         end
+       else
+         begin
+           s := (x3-x4) * (y2-y1) - (y3-y4) * (x2-x1);
+           p := (x3-x2) * (y4-y1) - (y3-y2) * (x4-x1);
+           if (s = 0) or (p = 0) then
+             WriteLn('Answer: ABCD - Trapezoid.')
+                                              // Ответ: ABCD - трапеция
+           else
+             WriteLn('Answer: ABCD - Quadrangle');
+                                              // Ответ: ABCD - четырехугольник
+         end;
+     end
+   else
+  (* CODE определит вид треугольника или нет удовлетворенного вида *)
+
+     begin
+       AB := sqrt(sqr(x2-x1) + sqr(y2-y1));
+       BC := sqrt(sqr(x3-x2) + sqr(y3-y2));
+       CD := sqrt(sqr(x4-x3) + sqr(y4-y3));
+       DA := sqrt(sqr(x1-x4) + sqr(y1-y4));
+       AC := sqrt(sqr(x3-x1) + sqr(y3-y1));
+       BD := sqrt(sqr(x4-x2) + sqr(y4-y2));
+
+       if (AB + BC = AC) and (AC <> 0) then
+         Line_ABC := True;
+       if (BC + CD = BD) and (BD <> 0) then
+         Line_BCD := True;
+       if (CD + DA = AC) and (AC <> 0) then
+         Line_CDA := True;
+       if (DA + AB = BD) and (BD <> 0) then
+         Line_DAB := True;
+
+       if ((Line_ABC = True) and (F_124 <> 0))
+       or ((Line_BCD = True) and (F_231 <> 0))
+       or ((Line_CDA = True) and (F_342 <> 0))
+       or ((Line_DAB = True) and (F_413 <> 0))
+       then
+        // условия определят, что-то треугольник или другие виды
+         WriteLn('Answer: Configuration is Triangle. ')
+                      // ответ: треугольник
+       else
+         WriteLn('Answer: No configuration of ABCD satisfied.');
+                      // ответ: нет удовлетворенного вида
+       end;
+
+  ReadLn;
+end.

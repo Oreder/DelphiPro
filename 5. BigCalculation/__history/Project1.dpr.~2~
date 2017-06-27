@@ -1,0 +1,27 @@
+program BigCalculation;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+var
+	X, Y0, Y, Eps: Real;
+        N: Integer;
+
+begin
+	Write('INPUT DATA x and Epsilon: ');
+	ReadLn(X, Eps);
+  Y0 := Sqr(X) * Ln(3) / 4;
+  Y  := y0; N  := 1;
+
+  While (Abs(Y0) > Eps) do
+    begin
+      N  := N + 1;
+ 			Y0 := cos(N * Pi) * exp(N * Ln(Sqr(X))) * Ln(2*N+1)/(4*N*N);
+ 			Y  := Y + Y0;
+ 		end;
+
+ 	WriteLn(' Result: Y = ', Y:-20:6);
+ 	ReadLn;
+end.

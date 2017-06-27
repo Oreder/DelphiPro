@@ -1,0 +1,59 @@
+program Variant_1;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+label 
+  Error, Pro;
+
+var 
+  A, B, S: string[10];
+  Ans: char;
+  I: Integer;
+  
+
+
+begin
+  Write('Input searching string A: ');
+  ReadLn(A);
+  WriteLn('Input main string (B): ');
+  
+  repeat
+    Write('[input] B - '); ReadLn(B)
+
+    if Length(B) > Length(A) then 
+      goto Error;	 
+ 
+    S := A; 
+
+    for I := 1 to Length(B) do
+      if Pos(B[I],S) <> 0 then
+        Delete(S,Pos(B[I],S),1)
+      else 
+	      goto Error;
+
+    if Length(S) <> 0 then 
+      begin
+        WriteLn('Answer: B CAN be establised from A.');
+        goto Pro;
+      end;
+    
+    Error:
+    begin
+      WriteLn('Answer: B can"t be establised from A.');
+        goto Pro;
+    end;  
+ 
+    Pro: 
+    begin
+      Write('Continue searching for B? (Y/N) ');
+      ReadLn(Ans);
+      WriteLn;
+    end;
+
+  until Ans = 'N';
+
+  ReadLn; ReadLn;
+end.

@@ -1,0 +1,56 @@
+program TablePrint;
+
+	{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+var
+	X, Y0, Y, Eps: Real;
+	N, C, Step, Max: Integer;
+
+
+begin
+	WriteLn('~$ Program03_NDBinh *$'); WriteLn;
+	WriteLn('SUM:  Y = 1 + X/1! + (X^2)/2! + ... + (X^N)/N!');
+	WriteLn;
+	WriteLn('Input the value of X and number of Step need to print:');
+	ReadLn(X, Step);
+	WriteLn('Input the value of Epsilon:');
+	ReadLn(Eps);
+	WriteLn('How many circles [SUM] need to break (Input number Max): ');
+	ReadLn(Max);
+	WriteLn;
+  WriteLn('       Y        N   ');
+	Y := 1; Y0 := X; N := 1; C := 1;
+	While (Y0 > Eps) do
+		begin
+			Y := Y + Y0;
+			if (N = Max) then
+				break;
+			if (N = C) then
+				begin
+					WriteLn(Y:10:4, '      ', N);
+					C := C * Step;
+				end;
+				Inc(N);
+			Y0 := Y0 * X / N;
+		end;
+
+	WriteLn;
+
+	if (N < Max) then
+    begin
+		WriteLn(' Program is broken before ', Max, ' circles, when N = ', N);
+    WriteLn(' [SUM] ANSWER: Y = ', Y:-8:5);
+    end
+	else
+		begin
+			Write(' Program is not broken after ', Max, ' circles (');
+			WriteLn('the last element of SUM = ', Y0:-9:8, ')');
+			WriteLn(' [SUM] ANSWER: Y = ', Y:-9:5);
+		end;
+
+	ReadLn;
+end.
+

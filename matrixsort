@@ -1,0 +1,33 @@
+const
+  N = 3;
+  M = 2;
+
+var
+  A: Array[0..N-1, 0..M-1] of Integer;
+  i, j, d, mo, T: Integer;
+
+begin
+  WriteLn(N, '*', M);
+  for i := 0 to N-1 do
+    for j := 0 to M-1 do
+      ReadLn(A[i, j]);
+
+  for j := 1 to N*M-1 do
+  begin
+    T := A[j div M, j mod M];
+    i := j-1;
+    while (i >= 0) and (A[i div M, i mod M] > T) do
+    begin
+      A[(i+1) div M, (i+1) mod M] := A[i div M, i mod M];
+      Dec(i);
+    end;
+    A[(i+1) div M, (i+1) mod M] := T;
+  end;
+
+  for i := 0 to N-1 do
+  begin
+    for j := 0 to M-1 do
+      Write(A[i, j], ' ');
+    WriteLn;
+  end;
+end.

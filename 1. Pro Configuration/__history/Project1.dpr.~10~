@@ -1,0 +1,112 @@
+﻿program ViewOfGeoFigures; //Определить вид получаемой геометрической фигуры
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils,
+  math;
+
+var 
+  X1, Y1, X2, Y2, X3, Y3, X4, Y4, Xm, Ym, Xn, Yn: Real;
+                   { координаты точек A(X1, Y1), B(X2, Y2), C(X3, Y3),       }
+                   {                  D(X4, Y4), M(Xm, Ym) и N(Xn, Yn)       }
+  F_123, F_124, F_234, F_231, F_341, F_342, F_413: Real;
+                   {параметры для определения относительного расстояния точек}
+
+  S, P: Real;                     {свободные параметры             }
+  AB, BC, CD, DA, AC, BD: Real;   {расстояния каждыми двумя точками}
+
+  Line_ABC, Line_BCD, Line_CDA, Line_DAB: Boolean;
+                   {параметры ошибки, чтобы определить 3 прямые точки}
+                   {          True, т.е прямые и False, т.е не прямые}
+begin
+  WriteLn('INPUT DATA OF POINTS A(X1,Y1), B(X2,Y2), C(X3,Y3) and D(X4,Y4)');
+  WriteLn(     '   (please type 8 numbers, for example: 1 1 1 2 3 3 5 4 )');
+  ReadLn(X1, Y1, X2, Y2, X3, Y3, X4, Y4);
+
+  F_123 := (Y1 - Y2) * (X3 - X1) + (X2 - X1) * (Y3 - Y1);
+  F_124 := (Y1 - Y2) * (X4 - X1) + (X2 - X1) * (Y4 - Y1);
+
+  F_234 := (Y2 - Y3) * (X4 - X2) + (X3 - X2) * (Y4 - Y2);
+  F_231 := (Y2 - Y3) * (X1 - X2) + (X3 - X2) * (Y1 - Y2);
+
+  F_341 := (Y3 - Y4) * (X1 - X3) + (X4 - X3) * (Y1 - Y3);
+  F_342 := (Y3 - Y4) * (X2 - X3) + (X4 - X3) * (Y2 - Y3);
+
+  F_413 := (Y4 - Y1) * (X3 - X4) + (X1 - X4) * (Y3 - Y4);
+
+  (* CODE определит 6 видов: квадрат, прямоугольник,
+                  параллелограмм, ромб, трапеция или четырехугольник *)
+
+  if (F_123 * F_124 > 0) and (F_234 * F_231 > 0) and (F_341 * F_342 > 0) then
+                     // условия определят, что ABCD - четырехугольник или нет
+    begin
+       Xm := (X1 + X3) / 2; Ym := (Y1 + Y3) / 2; {координат М - середина АС}
+       Xn := (X2 + X4) / 2; Yn := (Y2 + Y4) / 2; {координат N - середина BD}
+
+       if (Xm-Xn = 0) and (Ym-Yn = 0) then
+         begin
+           S := sqr(X3 - X1) + sqr(Y3 - Y1) - sqr(X2 - X4) - sqr(Y2 - Y4);
+           P := (X3 - X1) * (X2 - X4) + (Y3 - Y1) * (Y2 - Y4);
+           if (S = 0) and (P = 0) then
+             WriteLn('Answer: ABCD - Square.')
+                                              // Ответ: ABCD - квадрат
+           else
+             if (S = 0) then
+               WriteLn('Answer: ABCD - Rectangle.')
+                                              // Ответ: ABCD - прямоугольник
+             else
+               if (P = 0) then
+                 WriteLn('Answer: ABCD - Rhomb.')
+                                              // Ответ: ABCD - ромб
+               else
+                 WriteLn('Answer: ABCD - Parallelogram.');
+                                              // Ответ: ABCD - параллелограмм
+         end
+       else
+         begin
+           S := (X3 - X4) * (Y2 - Y1) - (Y3 - Y4) * (X2 - X1);
+           P := (X3 - X2) * (Y4 - Y1) - (Y3 - Y2) * (X4 - X1);
+           if (S = 0) or (P = 0) then
+             WriteLn('Answer: ABCD - Trapezoid.')
+                                              // Ответ: ABCD - трапеция
+           else
+             WriteLn('Answer: ABCD - Quadrangle');
+                                              // Ответ: ABCD - четырехугольник
+         end;
+     end
+   else
+  (* CODE определит вид треугольника или нет удовлетворенного вида *)
+
+     begin
+       AB := sqrt(sqr(X2 - X1) + sqr(Y2 - Y1));
+       BC := sqrt(sqr(X3 - X2) + sqr(Y3 - Y2));
+       CD := sqrt(sqr(X4 - X3) + sqr(Y4 - Y3));
+       DA := sqrt(sqr(X1 - X4) + sqr(Y1 - Y4));
+       AC := sqrt(sqr(X3 - X1) + sqr(Y3 - Y1));
+       BD := sqrt(sqr(X4 - X2) + sqr(Y4 - Y2));
+
+       if (AB + BC = AC) and (AC <> 0) then
+         Line_ABC := True;
+       if (BC + CD = BD) and (BD <> 0) then
+         Line_BCD := True;
+       if (CD + DA = AC) and (AC <> 0) then
+         Line_CDA := True;
+       if (DA + AB = BD) and (BD <> 0) then
+         Line_DAB := True;
+
+       if ((Line_ABC = True) and (F_124 <> 0))
+       or ((Line_BCD = True) and (F_231 <> 0))
+       or ((Line_CDA = True) and (F_342 <> 0))
+       or ((Line_DAB = True) and (F_413 <> 0))
+                      // условия определят, что-то треугольник или другие виды
+       then
+         WriteLn('Answer: Configuration is Triangle. ')
+                      // ответ: треугольник
+       else
+         WriteLn('Answer: No configuration of (ABCD) satisfied.');
+                      // ответ: нет удовлетворенного вида
+       end;
+
+  ReadLn;
+end.                  // Программа ViewOfGeoFigures

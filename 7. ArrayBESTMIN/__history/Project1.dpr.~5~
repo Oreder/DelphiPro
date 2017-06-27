@@ -1,0 +1,50 @@
+program ARR_MINVALUE;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+const
+  Max = 100;                     { maximum number elements of array }
+
+var
+  B, C: array[1..Max]of Real;    { B, C: array in Real              }
+  I, N: Integer;                 { I: counting variable
+                                   N: number elements of array B    }
+  Bmin: Real;                    { Bmin: minimum element of array B }
+
+begin
+    (* Enter initial data of array *)
+  Write('InPUT the number elements of ARRAY: N(B) = ');
+  ReadLn(N);
+  Write('Please type data of Array B[', N,']: ');
+  for I := 1 to N do
+    Read(B[I]);
+  WriteLn; WriteLn;
+    (* Printing input array *)
+  Write('ARRAY  INPUT: ');
+  for I := 1 to N do
+    Write(B[I]:5:2, ' ');
+  WriteLn; WriteLn;
+
+    (* Main loop to search Bmin *)
+  Bmin := B[1];
+  for I := 2 to N do
+    if B[I] < Bmin then
+      Bmin := B[I];
+    (* Conditions to contribute output array *)
+  if Bmin > 0 then
+    begin
+      Write('ARRAY OUTPUT: ');
+      for I := 1 to N do
+        begin
+          C[I] := B[I] / Sqrt(Bmin);
+          Write(C[I]:5:2,' ');     // Printing array
+        end;
+    end
+  else
+    WriteLn('OOPS: PROCESS COULD NOT BE DONE BECAUSE OF ERROR VALUE B_min.');
+
+  ReadLn; ReadLn;
+end.             // Program ARR_MINVALUE

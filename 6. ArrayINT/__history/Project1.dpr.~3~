@@ -1,0 +1,37 @@
+program ARR_MZ;
+
+  {$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+var
+  MZ, N: array[1..7]of Integer;
+  I, J: Integer;
+
+begin
+  Write('InPUT ARRAY (please type 7 numbers) : ');
+  for I := 1 to 7 do
+    Read(MZ[I]);
+  WriteLn; Write('ARRAY INPUT  MZ[7]: ');
+  for I := 1 to 7 do
+    Write(MZ[I], ' ');
+  WriteLn; WriteLn; J := 0;
+  // Main
+  for I := 1 to 7 do
+    if MZ[I] mod 5 = 0 then
+      begin
+        J := J + 1;
+        N[J] := MZ[I] div 5;
+      end;
+  if J > 0 then
+    begin
+      Write('ARRAY OUTPUT N[', J, '] : ');
+      for I := 1 to J do
+        Write(N[I], ' ');
+    end
+  else
+    Write('OPPS: ARRAY OUTPUT Z has NO elements. ');
+
+  ReadLn; ReadLn;
+end.
